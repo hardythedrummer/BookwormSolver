@@ -25,3 +25,33 @@ function doSetup()
 		}		
 	}
 }
+
+var Game = function() {
+	this.score = 0;
+	this.longestWord = "";
+	this.bestWord = "";
+
+	this.validWordsTree = ;
+};
+
+Game.prototype.isValidWord = function(word) {
+	
+};
+
+var WordTree = function() {
+	this.root = new WordTreeNode();
+};
+
+WordTree.prototype.buildTree = function() {
+	// iterate through all the word files and build the tree up
+};
+
+var WordTreeNode = function(parentNode) {
+	this.data = "";
+	this.parent = parentNode;
+	this.children = new Array();
+};
+
+WordTreeNode.prototype.AddChild = function(node) {
+	this.children.push(node);	
+};
