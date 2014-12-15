@@ -1,0 +1,12 @@
+#game { 
+	width: auto;
+	display: block;
+  	margin-left: auto;
+  	margin-right: auto;
+  }
+
+.column { width: 100px; border: 1px solid black; float:left; list-style-type: none; padding-left: 0px;}
+.column:nth-child(odd) { margin-top: 50px; }
+
+.letter-tile { border: 1px solid black; padding:45px;}
+
