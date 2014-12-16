@@ -1,3 +1,5 @@
+var game;
+
 document.addEventListener("DOMContentLoaded", function(event) {	
 	doSetup();
 });
@@ -23,7 +25,7 @@ function doSetup()
 		}		
 	}
 
-	var game = new Game();
+	game = new Game();
 }
 
 // Game definition and functions
@@ -47,35 +49,43 @@ var WordTree = function() {
 	this.root = new WordTreeNode();
 };
 
-WordTree.prototype.buildTree = function(data, node) {
-	// iterate through all the word lists and build the tree up
-	for(var letter in data) {
-		if(data.hasOwnProperty(letter)) {
-
-			var newNode = new WordTreeNode(node, letter);
-			node.AddChild(newNode);
-
-			this.buildTreeByLetter(data[letter], newNode); 
-		}
+WordTree.prototype.buildTree = function(data, node) {	
+	for(var index in data) {
+		this.buildTreeByWord(data[index], node);
 	}
 };
 
-WordTree.prototype.buildTreeByLetter = function(word, node) {
+// recursively build a letter tree, removing the first letter of the word each recursion
+WordTree.prototype.buildTreeByWord = function(word, parentNode) {
 	
-};
+	var nextNode = null;
+	if(!parentNode.children[word.charAt(0)]) {
+		nextNode = new WordTreeNode(parentNode, word.charAt(0));		
+	} else {
+		nextNode = parentNode.children[word.charAt(0)];
+	}
 
-WordTree.prototype.buildTreeByWord = function(word, node) {
-	
+	if(word.length > 1) {
+		this.buildTreeByWord(word.substr(1), nextNode);
+	} else {
+		nextNode.isWord = true;
+	}
 };
 
 // WordTreeNode definition and functions
 
 var WordTreeNode = function(parentNode, data) {
-	this.data = data;
+
+	this.data = data;	
 	this.parent = parentNode;
-	this.children = new Array();
+	if(parentNode != null) {
+		parentNode.AddChild(this);
+	}
+
+	this.children = {};
+	this.isWord = false;
 };
 
 WordTreeNode.prototype.AddChild = function(node) {
-	this.children.push(node);		
+	this.children[node.data] = node;
 };
