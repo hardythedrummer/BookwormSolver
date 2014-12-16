@@ -1,6 +1,6 @@
 var game;
 
-document.addEventListener("DOMContentLoaded", function(event) {	
+document.addEventListener("DOMContentLoaded", function(event) { 
 	doSetup();
 });
 
@@ -17,12 +17,12 @@ function doSetup()
 			var tile = document.createElement("li");
 			tile.className = "letter-tile";
 
-			var letter = String.fromCharCode(Math.floor((Math.random() * 26) + 65));			
+			var letter = String.fromCharCode(Math.floor((Math.random() * 26) + 65));            
 
 			var letterNode = document.createTextNode(letter);
 			tile.appendChild(letterNode);
 			columnList.appendChild(tile);
-		}		
+		}
 	}
 
 	game = new Game();
@@ -35,21 +35,22 @@ var Game = function() {
 	this.longestWord = "";
 	this.bestWord = "";
 
-	this.validWordsTree = new WordTree();
+	var rootNode = new WordTreeNode();
+	this.validWordsTree = new WordTree(rootNode);
 	this.validWordsTree.buildTree(Words, this.validWordsTree.root);
 };
 
 Game.prototype.isValidWord = function(word) {
-	
+	return this.validWordsTree.root.isValidWord(word, 0);
 };
 
 // WordTree definition and functions
 
-var WordTree = function() {
-	this.root = new WordTreeNode();
+var WordTree = function(rootNode) {
+	this.root = rootNode;
 };
 
-WordTree.prototype.buildTree = function(data, node) {	
+WordTree.prototype.buildTree = function(data, node) {   
 	for(var index in data) {
 		this.buildTreeByWord(data[index], node);
 	}
@@ -60,7 +61,7 @@ WordTree.prototype.buildTreeByWord = function(word, parentNode) {
 	
 	var nextNode = null;
 	if(!parentNode.children[word.charAt(0)]) {
-		nextNode = new WordTreeNode(parentNode, word.charAt(0));		
+		nextNode = new WordTreeNode(parentNode, word.charAt(0));        
 	} else {
 		nextNode = parentNode.children[word.charAt(0)];
 	}
@@ -76,16 +77,32 @@ WordTree.prototype.buildTreeByWord = function(word, parentNode) {
 
 var WordTreeNode = function(parentNode, data) {
 
-	this.data = data;	
+	this.data = data;   
 	this.parent = parentNode;
 	if(parentNode != null) {
-		parentNode.AddChild(this);
+		parentNode.addChild(this);
 	}
 
 	this.children = {};
 	this.isWord = false;
 };
 
-WordTreeNode.prototype.AddChild = function(node) {
+WordTreeNode.prototype.addChild = function(node) {
 	this.children[node.data] = node;
+};
+
+WordTreeNode.prototype.isValidWord = function(word, cursorPosition) {
+
+	var retVal = false;
+
+	if(this.children[word.charAt(cursorPosition)]) {
+		var childNode = this.children[word.charAt(cursorPosition)];
+		if(childNode.isWord && word.length === cursorPosition + 1) {
+			retVal = true;
+		} else if(word.length >  cursorPosition) {
+			retVal = childNode.isValidWord(word, cursorPosition + 1);
+		}
+	}
+
+	return retVal;
 };
