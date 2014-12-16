@@ -22,6 +22,8 @@ function doSetup()
 			columnList.appendChild(tile);
 		}		
 	}
+
+	var game = new Game();
 }
 
 // Game definition and functions
@@ -32,7 +34,7 @@ var Game = function() {
 	this.bestWord = "";
 
 	this.validWordsTree = new WordTree();
-	this.validWordsTree.buildTree(Words, root);
+	this.validWordsTree.buildTree(Words, this.validWordsTree.root);
 };
 
 Game.prototype.isValidWord = function(word) {
@@ -47,12 +49,15 @@ var WordTree = function() {
 
 WordTree.prototype.buildTree = function(data, node) {
 	// iterate through all the word lists and build the tree up
-	for (var i = 'A'; i < 'Z'; i++) {
-		var newNode = new WordTreeNode(node, String.fromCharCode(i));
-		node.AddChild(newNode);
+	for(var letter in data) {
+		if(data.hasOwnProperty(letter)) {
 
-		this.buildTreeByLetter(data[String.fromCharCode(i)], newNode); 
-	};
+			var newNode = new WordTreeNode(node, letter);
+			node.AddChild(newNode);
+
+			this.buildTreeByLetter(data[letter], newNode); 
+		}
+	}
 };
 
 WordTree.prototype.buildTreeByLetter = function(word, node) {
