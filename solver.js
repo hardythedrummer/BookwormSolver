@@ -2,20 +2,35 @@ var game;
 
 document.addEventListener("DOMContentLoaded", function(event) {
 	doSetup();
+	document.querySelector('#new-btn').addEventListener('click', function() {
+
+		for(var column = 0; column < 7; column++) {
+			var id = "col-" + column;
+			var columnList = document.getElementById(id);
+			columnList.innerHTML = '';
+		}
+
+		doSetup();
+	});
+
+	document.querySelector('#solve-btn').addEventListener('click', function() {
+		solve(game);
+	});
 });
 
 function doSetup()
 {
 	for(var column = 0; column < 7; column++) {
 		
-		var id = "col-" + column;
+		var id = `col-${column}`;
 		var columnList = document.getElementById(id);
 
 		var tileMax = column % 2 == 0 ? 7 : 8;
 		for(var tileCount = 0; tileCount < tileMax; tileCount++) {
 
 			var tile = document.createElement("li");
-			tile.className = "letter-tile";
+			tile.className = `letter-tile row-${tileCount}`;
+			
 
 			var letter = String.fromCharCode(Math.floor((Math.random() * 26) + 65));
 
@@ -27,6 +42,39 @@ function doSetup()
 
 	game = new Game();
 }
+
+function solve(gameObj) {
+	var getLetter = (row, col) => {
+		var selector = `#col-${column} .row-${tileCount}`;
+		return document.querySelector(selector).innerHTML;
+	};
+
+	// first build a graph
+	var getAdjacentTiles = function(row, col) {
+		var tiles = [];
+		// up to 6 adjacent tiles, minimum 3
+		
+	};
+
+	var firstTile = {
+		letter: getLetter(0,0),
+		row: 0,
+		col: 0,
+		adjacentTiles: getAdjacentTiles(0, 0)
+	};
+	
+	// do a DFS with each tile as a starting point, check each word against gameObj.isValidWord - highlight the longest word.	
+	for(var column = 0; column < 7; column++) {
+		var tileMax = column % 2 == 0 ? 7 : 8;
+		for(var tileCount = 0; tileCount < tileMax; tileCount++) {
+			let longestWord = doSolve(tileCount, column);
+			
+
+		}
+	}
+}
+
+
 
 // Game definition and functions
 
